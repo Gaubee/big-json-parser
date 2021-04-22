@@ -83,7 +83,7 @@ export async function readCp(go) {
      * 	done bool
      * }
      */
-    const res = await fetch("http://localhost:8301/cp.json");
+    const res = await fetch("http://localhost:8301/cp.json?s=1&e=200000");
     const jsonReader = res.body.getReader();
     const eleTxt = getEleTxt("dl-process");
     do {
@@ -205,10 +205,10 @@ export async function readCp(go) {
           read(2);
           const block = { height: ++count };
           if (block.height % 100 === 0) {
+            const diffTime = performance.now() - startTime;
             eleTxt.nodeValue = `block:${block.height} ${(
-              (performance.now() - startTime) /
-              block.height
-            ).toFixed(4)}ms/block`;
+              diffTime / block.height
+            ).toFixed(4)}ms/block total:${(diffTime / 1000).toFixed(4)}s`;
           }
           break;
         }

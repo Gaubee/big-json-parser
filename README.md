@@ -19,3 +19,18 @@
 2. 项目用到了 typescript 来编写 js 部分的工作。
 3. 用 esbuild 来将 js 与 wasm 两部分的文件进行组合打包
 4. 用 wmr 来提供文件服务（可以实时处理 typescript-esm 的输出）
+5. jsonreader.js 这个文件是 nodejs 程序，提供一个动态的 json 数据包。数据包模拟了区块链数据。
+   > http://localhost:8301/?s=10&e=20
+   1. **s** 为 startHeigth
+   1. **e** 为 endHeigth
+
+## Benchmark
+
+解析 200_0000 条数据：下载数据+解析数据
+
+1. 直接使用 fetch.response.json() 来作为最基准的性能
+   1. 浏览器~= 6.1560s
+   1. nodejs~= 2.5330s
+1. 使用流处理的模式来解析数据
+   1. browser/wasm/go-json-stream ~= 23.3318s
+   1. nodejs/js/JSONStream ~= 8.3680s

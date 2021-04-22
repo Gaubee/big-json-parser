@@ -1,5 +1,4 @@
 //@ts-check
-const fs = require("fs");
 const http = require("http");
 const sleep = (ms) => new Promise((cb) => setTimeout(cb, ms));
 
@@ -18,12 +17,17 @@ function* genJson(startHeight, endHeight) {
 }
 
 const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, "http://localhost");
+  console.log(req.url, url);
+  const startHeight = parseInt(url.searchParams.get("s")) || 1;
+  const endHeight = parseInt(url.searchParams.get("e")) || startHeight;
+  const pauseMs = parseInt(url.searchParams.get("p")) || 0;
   res.setHeader("Access-Control-Allow-Origin", "*");
   //   res.setHeader("Transfer-Encoding", "chunked");
 
   {
-    for (const chunk of genJson(1, 157263)) {
-      // await sleep(10);
+    for (const chunk of genJson(startHeight, endHeight /* 157263 */)) {
+      pauseMs && (await sleep(pauseMs));
       res.write(chunk);
     }
     res.end();
