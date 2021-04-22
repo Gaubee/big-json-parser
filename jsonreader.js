@@ -21,9 +21,8 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   //   res.setHeader("Transfer-Encoding", "chunked");
 
-  let highWaterMarkAcc = 0;
   {
-    for await (const chunk of genJson(1, 157263)) {
+    for (const chunk of genJson(1, 157263)) {
       // await sleep(10);
       res.write(chunk);
     }
