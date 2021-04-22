@@ -1,7 +1,7 @@
 这是一个学习项目。
-尝试使用 go 来编写一个基于 wasm 的 json-stream 。并对比热门高性能 nodejs 的实现。
+尝试使用 go 来编写一个基于 wasm 的 json-stream 。并对比对照代码写得比较好的纯 js 库的实现。
 
-因为目前 wasm 的特性，是很难超越高性能 js 的实现。
+因为目前 wasm 的特性，是很难超越“高性能 js”的实现。毕竟有一个 Bytes 转换的成本在那边。
 所以该项目的目的是研究 go-wasm，将性能尽可能逼近 pure-js。
 
 ## TIP
