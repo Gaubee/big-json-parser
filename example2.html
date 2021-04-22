@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+Copyright 2018 The Go Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Go wasm</title>
+  </head>
+
+  <body>
+    <!--
+	Add the following polyfill for Microsoft Edge 17/18 support:
+	<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.min.js"></script>
+	(see https://caniuse.com/#feat=textencoder)
+	-->
+    <script src="./example-lib/wasm_exec.js"></script>
+
+    <h1 id="red"></h1>
+
+    <script type="module">
+      import { JsonStreamParserBuilder } from "./js-build/bundle-json-stream.esm.js";
+      const JsonStreamParser = await JsonStreamParserBuilder();
+      const jsp = new JsonStreamParser();
+      jsp.write("[1,2]");
+      jsp.read(1);
+      document.getElementById("red").innerHTML = jsp.read(1) + jsp.read(1);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "big-json-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "js-build/cjs/index.js",
+  "module": "js-build/esm/index.js",
+  "scripts": {
+    "dev": "tsc --build tsconfig.json -w",
+    "build:ts-src": "tsc --build tsconfig.json",
+    "build:go-json-stream": "cd ./go-json-stream & cross-env GOOS=js GOARCH=wasm go build -o ../js-build/wasm/json-stream.wasm",
+    "build:esbuild": "node ./scripts/esbuild.js",
+    "build": "yarn build:ts-src & yarn build:go-json-stream & yarn build:esbuild",
+    "wmr": "wmr",
+    "wmr:dev": "wmr --public ./  --out js-build  ",
+    "test": " go test ./stream_test.go \"-test.run\" TestJsonStream"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.11.12",
+    "wmr": "^1.5.1"
+  }
+}

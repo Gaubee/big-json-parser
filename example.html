@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+Copyright 2018 The Go Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Go wasm</title>
+  </head>
+
+  <body>
+    <!--
+	Add the following polyfill for Microsoft Edge 17/18 support:
+	<script src="https://cdn.jsdelivr.net/npm/text-encoding@0.7.0/lib/encoding.min.js"></script>
+	(see https://caniuse.com/#feat=textencoder)
+	-->
+    <script src="./example-lib/wasm_exec.js"></script>
+
+    <!-- <script>
+      const worker = new Worker("./example-lib/worker.js");
+      worker.onmessage = (e) => {
+        if (e.data === "ready") {
+          document.getElementById("runOnWorkerButton").disabled = false;
+        }
+      };
+      function runOnWorker() {
+        worker.postMessage("run");
+      }
+    </script> -->
+
+    <button id="runButton" disabled>Run Test</button>
+    <button id="readCpButton" disabled>Read Checkpoint</button>
+    <button disabled onclick="stopCp()">Stop Checkpoint</button>
+    <button disabled onclick="remuseCp()">Remuse Checkpoint</button>
+    <p>Download: <span id="dl-process"></span></p>
+    <p>Progress: <span id="cp-process"></span></p>
+
+    <script type="module">
+      if (!WebAssembly.instantiateStreaming) {
+        // polyfill
+        WebAssembly.instantiateStreaming = async (resp, importObject) => {
+          const source = await (await resp).arrayBuffer();
+          return await WebAssembly.instantiate(source, importObject);
+        };
+      }
+
+      const go = new Go();
+      let mod, inst;
+      WebAssembly.instantiateStreaming(
+        fetch("/js-build/wasm/json-stream.wasm"),
+        go.importObject
+      )
+        .then((result) => {
+          mod = result.module;
+          inst = result.instance;
+          for (const btn of document.querySelectorAll("button")) {
+            btn.disabled = false;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      async function run() {
+        console.clear();
+        requestAnimationFrame(function checkToRunTest1() {
+          if (typeof Go["gaubee.com/json-stream-reader"] !== "undefined") {
+            import("./example-lib/test.js").then((testModule) => {
+              testModule.doTest(go);
+            });
+          } else {
+            requestAnimationFrame(checkToRunTest1);
+          }
+        });
+        await go.run(inst);
+        inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+      }
+      document.getElementById("runButton").onclick = run;
+
+      async function readCp() {
+        console.clear();
+        requestAnimationFrame(function checkToRunTest1() {
+          if (typeof Go["gaubee.com/json-stream-reader"] !== "undefined") {
+            import("./example-lib/readcp.js").then((testModule) => {
+              testModule.readCp(go);
+            });
+          } else {
+            requestAnimationFrame(checkToRunTest1);
+          }
+        });
+        await go.run(inst);
+        inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+      }
+
+      document.getElementById("readCpButton").onclick = readCp;
+    </script>
+  </body>
+</html>

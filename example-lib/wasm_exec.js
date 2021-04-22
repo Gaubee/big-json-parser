@@ -1,0 +1,1 @@
+D:/dev/Github/go/misc/wasm/wasm_exec.js
